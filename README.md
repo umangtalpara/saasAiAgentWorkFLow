@@ -38,4 +38,33 @@ saasAiAgentWorkFLow/
 
 1. Check the **[How-To Guide](doc/how-to-use-ai.md)** for detailed instructions on utilizing the AI Factory workflow.
 2. Complete your Product Requirements Document at **[doc/prd.md](doc/prd.md)**.
-3. Use your preferred AI coder tool (Claude Code, Cursor, or Google Antigravity) to initiate the development loop. The tool will read rules from the root `AGENTS.md` and thin adapters automatically.
+3. Use your preferred AI coder tool to initiate the development loop.
+
+### 🚀 Running the Workflow Across Different AI Tools
+
+Here is how to launch the pipeline and start code generation in each tool:
+
+#### 1. Claude Code
+Claude Code reads the root `CLAUDE.md` and dynamically imports capabilities from `.claude/skills/` as needed.
+- **To Start**: Open your terminal in the repository root and run:
+  ```bash
+  claude
+  ```
+- **Execution**: Instruct Claude in the chat:
+  > *I have completed the PRD at doc/prd.md. Please ingest it, start the deep planning phase, and execute the roadmap.*
+- **Slash Commands**: Run slash workflows directly from the terminal (e.g. `/testing`, `/deployment`).
+
+#### 2. Cursor
+Cursor automatically loads conventions from `AGENTS.md` and `.cursor/rules/*.mdc` (including `core.mdc`).
+- **To Start**: Open the repository folder in Cursor.
+- **Execution**: Open Cursor Composer (`Ctrl+I` / `Cmd+I`) or Chat (`Ctrl+L` / `Cmd+L`) and instruct:
+  > *I have completed the PRD at doc/prd.md. Please ingest it, run the deep planning phase, and generate the roadmap.*
+  Rules will auto-attach based on the files in your session context.
+
+#### 3. Google Antigravity
+Google Antigravity automatically detects conventions from `AGENTS.md` and uses the rules, skills, and workflows under `.agents/`.
+- **To Start**: Open the workspace in your IDE with the Google Antigravity extension enabled.
+- **Execution**: Message the agent in the chat:
+  > *I have completed my PRD. Please ingest doc/prd.md and start code generation.*
+- **Workflows**: Trigger specific pre-defined workflows using commands like `/prd-to-plan` or `/testing`.
+
