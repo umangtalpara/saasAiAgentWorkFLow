@@ -1,6 +1,6 @@
 # Progress Tracker
 
-> This file is automatically maintained by the Super Agent. It provides a detailed view of task-level progress across all phases.
+> This file is updated by the AI when instructed. It provides a detailed view of task-level progress across all phases.
 
 ---
 

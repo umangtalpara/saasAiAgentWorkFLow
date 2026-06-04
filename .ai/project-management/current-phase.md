@@ -1,6 +1,6 @@
 # Current Phase
 
-> This file is automatically maintained by the Super Agent. It tracks the currently active phase and its tasks.
+> This file is updated by the AI when instructed. It tracks the currently active phase and its tasks.
 
 ---
 

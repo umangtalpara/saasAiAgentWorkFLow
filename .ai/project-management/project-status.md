@@ -1,6 +1,6 @@
 # Project Status
 
-> This file is automatically maintained by the Super Agent. It provides a high-level overview of the project's current state.
+> This file is updated by the AI when instructed. It provides a high-level overview of the project's current state.
 
 ---
 

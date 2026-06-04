@@ -1,6 +1,6 @@
 # Agent Status
 
-> This file is automatically maintained by the Super Agent. It tracks the real-time status of all agents in the system.
+> This file is updated by the AI when instructed. It tracks the status of all agents in the system.
 
 ---
 
