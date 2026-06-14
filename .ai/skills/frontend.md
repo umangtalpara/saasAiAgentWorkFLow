@@ -85,6 +85,14 @@ components/
 5. Touch targets minimum 48x48px on mobile
 ```
 
+### Environment & API Pattern
+```
+1. Create a `.env` and `.env.example` file in the frontend root.
+2. Read the backend API gateway base URL from the `NEXT_PUBLIC_API_URL` environment variable.
+3. Configure the HTTP/Axios base client in `lib/api-client.ts` to use `process.env.NEXT_PUBLIC_API_URL`.
+4. Never hardcode backend server URLs directly in the API service files.
+```
+
 ## Anti-Patterns (Never Do)
 
 - Never use `any` type — always define proper TypeScript interfaces.
@@ -96,3 +104,4 @@ components/
 - Never skip accessibility — all interactive elements need ARIA labels and keyboard support.
 - Never use `useEffect` for data fetching — use React Query.
 - Never put business logic in components — extract to hooks or utilities.
+- Never hardcode API base URLs — always configure via the `NEXT_PUBLIC_API_URL` environment variable.

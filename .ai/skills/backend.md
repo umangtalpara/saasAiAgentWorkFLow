@@ -45,6 +45,7 @@
 - Implement cache invalidation strategies (write-through/cache-aside).
 - Build rate limiting with Redis sliding window.
 - Use Redis Streams for real-time features.
+- Connect to Redis/BullMQ using the unified `REDIS_URL` environment variable.
 
 ## Patterns
 
@@ -68,6 +69,13 @@ Every feature is a self-contained NestJS module with:
 - Log errors with context (module, method, user, request ID)
 ```
 
+### Logging Pattern
+```
+- Configure structured logging with Winston.
+- Implement optional Datadog integration: if `DD_LOGS_ENABLED=true` (or string `"true"`), add a Winston transport (e.g., HTTP transport) forwarding logs to Datadog.
+- Ensure Datadog integration uses: `DD_API_KEY`, `DD_SITE` (e.g., `us5.datadoghq.com`), `DD_SERVICE` (e.g., `smart-llm-backend`), `DD_ENV`, and `DD_VERSION`.
+```
+
 ### Security Pattern
 ```
 - Validate all inputs at the controller level with class-validator
@@ -87,3 +95,4 @@ Every feature is a self-contained NestJS module with:
 - Never log sensitive data (passwords, tokens, PII).
 - Never use `*` for CORS origins in production.
 - Never skip input validation on any endpoint.
+- Never use separate `REDIS_HOST`, `REDIS_PORT`, or `REDIS_PASSWORD` variables — always connect via the unified `REDIS_URL` connection string.

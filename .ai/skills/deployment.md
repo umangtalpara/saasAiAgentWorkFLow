@@ -21,12 +21,14 @@
 
 ### Environment Management
 - Separate configurations for development, staging, and production.
-- Environment variable management with `.env` files.
+- Environment variable management with `.env` files for both backend and frontend.
+- Backend environments configure using unified variables like `REDIS_URL` (avoid separate host/port/password variables).
+- Frontend environment files use `NEXT_PUBLIC_` prefixed variables (specifically `NEXT_PUBLIC_API_URL` for the backend API URL prefix).
 - Secrets management (never commit secrets to git).
 
 ### Monitoring & Logging
 - Application metrics with Prometheus.
-- Log aggregation with Winston + ELK stack.
+- Log aggregation with Winston + ELK stack / Datadog.
 - Health check endpoints (`/health`, `/ready`).
 - Error tracking and alerting.
 
@@ -46,6 +48,12 @@ services:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongo:27017/app
       - REDIS_URL=redis://redis:6379
+      - DD_API_KEY=your_datadog_api_key_here
+      - DD_SITE=us5.datadoghq.com
+      - DD_SERVICE=smart-llm-backend
+      - DD_ENV=development
+      - DD_VERSION=1.0.0
+      - DD_LOGS_ENABLED=true
     depends_on:
       mongo:
         condition: service_healthy

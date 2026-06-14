@@ -57,15 +57,29 @@
 #### 3. Logging Strategy
 ```typescript
 // Structured logging with Winston
+const transports: winston.transport[] = [
+  new winston.transports.Console({
+    format: winston.format.combine(
+      winston.format.timestamp(),
+      winston.format.json(),
+    ),
+  }),
+];
+
+// Datadog Integration (Optional)
+if (process.env.DD_LOGS_ENABLED === 'true') {
+  transports.push(
+    new winston.transports.Http({
+      host: `http-intake.logs.${process.env.DD_SITE || 'datadoghq.com'}`,
+      path: `/api/v2/logs?dd-api-key=${process.env.DD_API_KEY}&ddsource=nodejs&service=${process.env.DD_SERVICE || 'smart-llm-backend'}&env=${process.env.DD_ENV || 'development'}&version=${process.env.DD_VERSION || '1.0.0'}`,
+      ssl: true,
+      format: winston.format.json(),
+    })
+  );
+}
+
 const logger = WinstonModule.createLogger({
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json(),
-      ),
-    }),
-  ],
+  transports,
 });
 
 // Log levels

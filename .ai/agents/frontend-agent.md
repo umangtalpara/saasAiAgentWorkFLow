@@ -317,6 +317,23 @@ export const useUIStore = create<UIState>((set) => ({
 }));
 ```
 
+### Environment & API Client Configuration
+
+- **Environment File**: Always create `.env` and `.env.example` files in the frontend root (`codebase/frontend/`).
+- **Base API URL**: The frontend client must read the backend API gateway URL from the `NEXT_PUBLIC_API_URL` environment variable.
+- **API Client Setup**: Use `NEXT_PUBLIC_API_URL` to configure the base URL for the API client (Axios/Fetch wrapper in `lib/api-client.ts`).
+  ```typescript
+  // lib/api-client.ts
+  import axios from 'axios';
+
+  export const apiClient = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  ```
+
 ### Animation Patterns
 
 ```typescript

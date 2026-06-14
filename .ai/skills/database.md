@@ -22,6 +22,7 @@
 - **Rate Limiting**: Build highly scalable sliding-window rate limiters.
 - **Pub/Sub**: Use Redis Pub/Sub for real-time notifications and cross-instance communication.
 - **Redis Streams**: Leverage event-sourcing patterns and high-throughput real-time message routing.
+- **Connection Rule**: Always connect to Redis using the single `REDIS_URL` environment variable. Do not split connection details into separate host, port, and password variables.
 
 ## Schema Design Rules
 
@@ -102,3 +103,5 @@ Rules:
 - **Never store passwords in plain text** — always hash with bcrypt.
 - **Never store binary files in MongoDB** — save files to S3-compatible storage and store URLs or keys in documents.
 - **Never use floating-point types for monetary values** — store as integers (cents) or use `SchemaTypes.Decimal128`.
+- **Never use separate Redis variables** (such as `REDIS_HOST`, `REDIS_PORT`, or `REDIS_PASSWORD`) to configure Redis/BullMQ connections — always use the unified `REDIS_URL` connection string.
+

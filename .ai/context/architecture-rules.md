@@ -89,10 +89,18 @@ Entity Layer       → Data models, schema definitions
         NODE_ENV: Joi.string().valid('development', 'staging', 'production').required(),
         PORT: Joi.number().default(3001),
         MONGODB_URI: Joi.string().required(),
-        REDIS_URL: Joi.string().required(),
+        REDIS_URL: Joi.string().required(), // ALWAYS use REDIS_URL. Do NOT use REDIS_HOST, REDIS_PORT, or REDIS_PASSWORD.
         JWT_SECRET: Joi.string().min(32).required(),
         JWT_ACCESS_EXPIRY: Joi.string().default('15m'),
         JWT_REFRESH_EXPIRY: Joi.string().default('7d'),
+
+        // Datadog Integration (Optional)
+        DD_API_KEY: Joi.string().optional(),
+        DD_SITE: Joi.string().optional(),
+        DD_SERVICE: Joi.string().optional(),
+        DD_ENV: Joi.string().optional(),
+        DD_VERSION: Joi.string().optional(),
+        DD_LOGS_ENABLED: Joi.boolean().default(false),
       }),
     }),
   ],

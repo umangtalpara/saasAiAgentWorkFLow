@@ -164,6 +164,18 @@ export class AllExceptionsFilter implements ExceptionFilter {
 - Set TTL on all cached values.
 - Implement cache invalidation on write operations.
 - Use Redis Streams for real-time features.
+- **Connection Rule**: Connect using the single `REDIS_URL` environment variable. Do NOT use separate `REDIS_HOST`, `REDIS_PORT`, or `REDIS_PASSWORD` variables.
+
+### Logging & Monitoring Standards
+
+- Use structured logging with Winston.
+- **Datadog Integration (Optional)**: Support optional Datadog logging. When `DD_LOGS_ENABLED=true` (or string `"true"`), configure a Winston transport (e.g. `winston.transports.Http` or appropriate log formatting) to forward logs to Datadog. Required environment variables:
+  - `DD_API_KEY`: Your Datadog API Key.
+  - `DD_SITE`: E.g., `us5.datadoghq.com`.
+  - `DD_SERVICE`: The name of the service (e.g., `smart-llm-backend`).
+  - `DD_ENV`: Environment name (e.g., `development`).
+  - `DD_VERSION`: Service version (e.g., `1.0.0`).
+  - `DD_LOGS_ENABLED`: Set to `true` to enable.
 
 ### Security Standards
 
