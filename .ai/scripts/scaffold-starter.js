@@ -27,6 +27,36 @@ let state = {
   loggingProvider: 'local' // local, datadog, elk
 };
 
+const workspaceRoot = path.join(__dirname, '../..');
+const backendPath = path.join(workspaceRoot, 'codebase/backend');
+const frontendPath = path.join(workspaceRoot, 'codebase/frontend');
+const sharedPath = path.join(workspaceRoot, 'codebase/shared');
+
+// Clean up codebase utility
+if (process.argv[2] === 'clean') {
+  log('Cleaning up generated codebase files...', colors.yellow);
+  const filesToDelete = [
+    path.join(workspaceRoot, 'package.json'),
+    path.join(workspaceRoot, 'package-lock.json'),
+    path.join(workspaceRoot, 'docker-compose.yml'),
+    path.join(backendPath, 'package.json'),
+    path.join(backendPath, '.env'),
+    path.join(frontendPath, 'package.json'),
+  ];
+  filesToDelete.forEach(f => {
+    if (fs.existsSync(f)) {
+      fs.unlinkSync(f);
+      log(`Deleted: ${path.relative(workspaceRoot, f)}`, colors.green);
+    }
+  });
+  if (fs.existsSync(sharedPath)) {
+    fs.rmSync(sharedPath, { recursive: true, force: true });
+    log('Deleted: codebase/shared/', colors.green);
+  }
+  log('Clean up finished! Codebase folder is reset.', colors.bold + colors.green);
+  process.exit(0);
+}
+
 const statePath = path.join(__dirname, '../memory/state.json');
 if (fs.existsSync(statePath)) {
   try {
@@ -49,11 +79,6 @@ for (let i = 0; i < args.length; i++) {
 
 log(`Scaffolding target project with configuration:`, colors.bold + colors.blue);
 console.log(JSON.stringify(state, null, 2));
-
-const workspaceRoot = path.join(__dirname, '../..');
-const backendPath = path.join(workspaceRoot, 'codebase/backend');
-const frontendPath = path.join(workspaceRoot, 'codebase/frontend');
-const sharedPath = path.join(workspaceRoot, 'codebase/shared');
 
 // Ensure directories exist
 function ensureDir(dir) {

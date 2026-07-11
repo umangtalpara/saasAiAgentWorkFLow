@@ -196,6 +196,62 @@ describe('[ServiceName]', () => {
   });
 });
 ```
+## SQL (Prisma ORM) Unit Test Template
+
+```typescript
+// tests/unit/[module]/[service].spec.ts
+
+import { Test, TestingModule } from '@nestjs/testing';
+import { [ServiceName] } from '@/modules/[module]/[module].service';
+import { PrismaService } from '@/database/prisma.service';
+import { NotFoundException } from '@nestjs/common';
+
+const mockPrisma = () => ({
+  [modelName]: {
+    findMany: jest.fn(),
+    findUnique: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  }
+});
+
+describe('[ServiceName] (Prisma)', () => {
+  let service: [ServiceName];
+  let prisma: any; // Mocked Prisma client
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        [ServiceName],
+        {
+          provide: PrismaService,
+          useFactory: mockPrisma,
+        },
+      ],
+    }).compile();
+
+    service = module.get<[ServiceName]>([ServiceName]);
+    prisma = module.get<PrismaService>(PrismaService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('findAll', () => {
+    it('should return all records', async () => {
+      const expected = [{ id: '1', name: 'Test Record' }];
+      prisma.[modelName].findMany.mockResolvedValue(expected);
+
+      const result = await service.findAll();
+
+      expect(result).toEqual(expected);
+      expect(prisma.[modelName].findMany).toHaveBeenCalledTimes(1);
+    });
+  });
+});
+```
 
 ## Integration Test Template
 

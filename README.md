@@ -68,3 +68,38 @@ Google Antigravity automatically detects conventions from `AGENTS.md` and uses t
   > *I have completed my PRD. Please ingest doc/prd.md and start code generation.*
 - **Workflows**: Trigger specific pre-defined workflows using commands like `/prd-to-plan` or `/testing`.
 
+---
+
+## ⚙️ Developer CLI Commands
+
+* **Codebase Compliance Auditor**:
+  ```bash
+  node .ai/scripts/validate-project.js
+  ```
+  *(Audits naming styles, class lengths, direct Mongoose service calls, and type safety)*
+* **Project Scaffolding Builder**:
+  ```bash
+  node .ai/scripts/scaffold-starter.js
+  ```
+  *(Scaffolds standard monorepos vs decoupled projects, DB ORMs, caching setups, and environment variables)*
+* **Status Logs Synchronizer**:
+  ```bash
+  node .ai/scripts/status-manager.js sync
+  ```
+  *(Synchronizes JSON database state to markdown logs)*
+
+---
+
+## 🔧 Post-Development Maintenance
+
+### 🐛 1. Fixing Bugs
+1. Create a new bug file: **`doc/bugs/[bug-name].md`** (use template **`.ai/templates/bug-template.md`**).
+2. Detail the issue, steps to reproduce, and logs.
+3. Chat message to the agent:
+   > *"I have created a bug report at doc/bugs/[bug-name].md. Please investigate, write a reproducing test, and patch the codebase."*
+
+### 🚀 2. Adding Features
+1. Create a new feature spec: **`doc/features/[feature-name].md`** (use template **`.ai/templates/feature-template.md`**).
+2. Chat message to the agent:
+   > *"I have added a new feature request at doc/features/[feature-name].md. Please analyze the impact on our current architecture, add it as a new phase, and implement it."*
+
