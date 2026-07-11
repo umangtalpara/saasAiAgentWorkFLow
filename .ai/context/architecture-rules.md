@@ -10,27 +10,29 @@ The application follows a modular monolith architecture using NestJS modules. Ea
 ┌────────────────────────────────────────────────────┐
 │                    API Gateway                      │
 │              (Controllers + Guards)                 │
-├────────────────────────────────────────────────────┤
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐         │
-│  │  Auth     │  │  Users   │  │ Feature  │  ...    │
-│  │  Module   │  │  Module  │  │  Module  │         │
-│  └──────────┘  └──────────┘  └──────────┘         │
-│                                                     │
-├────────────────────────────────────────────────────┤
-│              Shared / Common Module                 │
-│     (Guards, Pipes, Filters, Interceptors)          │
-├────────────────────────────────────────────────────┤
-│                                                     │
-│  ┌──────────┐  ┌──────────┐                         │
-│  │ MongoDB  │  │  Redis   │                         │
-│  └──────────┘  └──────────┘                         │
-│                                                     │
-│  ┌──────────┐                                       │
-│  │  BullMQ  │                                       │
-│  └──────────┘                                       │
-│                                                     │
-└────────────────────────────────────────────────────┘
+│ ├────────────────────────────────────────────────────┤
+│ │                                                     │
+│ │  ┌──────────┐  ┌──────────┐  ┌──────────┐         │
+│ │  │  Auth     │  │  Users   │  │ Feature  │  ...    │
+│ │  │  Module   │  │  Module  │  │  Module  │         │
+│ │  └──────────┘  └──────────┘  └──────────┘         │
+│ │                                                     │
+│ ├────────────────────────────────────────────────────┤
+│ │              Shared / Common Module                 │
+│ │     (Guards, Pipes, Filters, Interceptors)          │
+│ ├────────────────────────────────────────────────────┤
+│ │                                                     │
+│ │  ┌────────────────────────────────────┐            │
+│ │  │        Database (Choose One)       │            │
+│ │  │  MongoDB (Mongoose) / SQL (Prisma) │            │
+│ │  └────────────────────────────────────┘            │
+│ │                                                     │
+│ │  ┌────────────────────────────────────┐            │
+│ │  │          Cache (Choose One)        │            │
+│ │  │        Redis Engine / Local RAM    │            │
+│ │  └────────────────────────────────────┘            │
+│ │                                                     │
+│ └────────────────────────────────────────────────────┘
 ```
 
 ### Layered Architecture (Per Module)
@@ -40,16 +42,16 @@ Controller Layer   → HTTP request handling, input validation, response formatt
     ↓
 Service Layer      → Business logic, orchestration, domain rules
     ↓
-Repository Layer   → Data access, query building, database operations
+Repository Layer   → Data access (Mongoose queries or Prisma database client queries)
     ↓
-Entity Layer       → Data models, schema definitions
+Entity Layer       → Data models, database schema definitions (Mongoose schema or Prisma schema)
 ```
 
 ### Rules
 
 1. **Controllers** handle HTTP concerns only — no business logic.
 2. **Services** contain all business logic — injectable and testable.
-3. **Repositories** abstract database access — services never query directly.
+3. **Repositories** abstract database access — services never query the database model or DB client directly.
 4. **Entities** define data shapes — no methods, no logic.
 5. **DTOs** validate inputs and serialize outputs — separate request/response DTOs.
 6. **Guards** handle authentication and authorization — applied at controller level.
@@ -65,7 +67,9 @@ Entity Layer       → Data models, schema definitions
 - Avoid circular dependencies — use `forwardRef()` only as a last resort.
 
 #### Across Modules (Decoupled)
-- Use BullMQ (Redis) for background jobs and events.
+- Background events use the configured queue system.
+  - If **Redis** is used: BullMQ job queue.
+  - If **Local Cache** is used: NestJS built-in `@nestjs/schedule` and event emitters.
 - Event/Job naming: `module.entity.action` (e.g., `auth.user.registered`).
 - Events are fire-and-forget — don't wait for processing.
 - Consumers are idempotent — safe to process the same event twice.
@@ -88,13 +92,21 @@ Entity Layer       → Data models, schema definitions
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid('development', 'staging', 'production').required(),
         PORT: Joi.number().default(3001),
-        MONGODB_URI: Joi.string().required(),
-        REDIS_URL: Joi.string().required(), // ALWAYS use REDIS_URL. Do NOT use REDIS_HOST, REDIS_PORT, or REDIS_PASSWORD.
+        
+        // MongoDB (if selected)
+        MONGODB_URI: Joi.string().when('DB_ENGINE', { is: 'mongodb', then: Joi.required(), otherwise: Joi.optional() }),
+        
+        // SQL (if selected)
+        DATABASE_URL: Joi.string().when('DB_ENGINE', { is: 'sql', then: Joi.required(), otherwise: Joi.optional() }),
+        
+        // Caching
+        REDIS_URL: Joi.string().optional(), // Required only if Redis is selected. Never use REDIS_HOST/PORT/PASSWORD.
+        
         JWT_SECRET: Joi.string().min(32).required(),
         JWT_ACCESS_EXPIRY: Joi.string().default('15m'),
         JWT_REFRESH_EXPIRY: Joi.string().default('7d'),
 
-        // Datadog Integration (Optional)
+        // Datadog Integration (Optional/Conditional)
         DD_API_KEY: Joi.string().optional(),
         DD_SITE: Joi.string().optional(),
         DD_SERVICE: Joi.string().optional(),
@@ -112,16 +124,18 @@ Entity Layer       → Data models, schema definitions
 1. **No circular dependencies** between modules.
 2. **Common module** is imported by feature modules, never the reverse.
 3. **Feature modules** do not directly import other feature modules' internals.
-4. **Shared types** live in `codebase/shared/` and are imported by both backend and frontend.
+4. **Shared Types Layout**:
+   * **Monorepo setup**: Shared types live in `codebase/shared/` and are imported by both backend and frontend.
+   * **Decoupled setup**: Frontend and backend are completely independent. Duplicate types or auto-generated OpenAPI models are maintained separately in each codebase folder.
 5. **Third-party libraries** are wrapped in internal services for abstraction.
 
 ### Forbidden Patterns
 
 - ❌ Business logic in controllers
-- ❌ Direct database queries in services (use repositories)
+- ❌ Direct database queries or DB client actions in services (use repositories)
 - ❌ `any` types anywhere in the codebase
-- ❌ Mongoose auto-indexing enabled in production (causes performance overhead)
+- ❌ Mongoose auto-indexing or Prisma dynamic schema sync enabled in production (causes performance overhead)
 - ❌ Hardcoded configuration values (use `.env`)
 - ❌ Circular module dependencies
 - ❌ God classes (>200 lines) or god functions (>30 lines)
-- ❌ In-memory state that prevents horizontal scaling
+- ❌ In-memory state that prevents horizontal scaling (if multi-instance scaling is selected)

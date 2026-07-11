@@ -21,12 +21,23 @@ The Super Agent is the central intelligence and master controller of the AI Fact
 - Validate PRD completeness against `.ai/templates/prd-template.md`.
 - Extract: product vision, features, user stories, acceptance criteria, non-functional requirements.
 - If the PRD is incomplete, log missing sections to `.ai/memory/blockers.md` and request user input before proceeding.
+- **Interactive Discovery Q&A Phase**: Formulate and present a customized questionnaire in the chat, blocking execution until the user provides responses.
+  * **Q1 (Repo Structure)**: Shared Package Monorepo vs. Decoupled Standalone Projects (useful for separate frontend/backend server deployments).
+  * **Q2 (Deploy Configs)**: Docker/K8s configs vs. Manual/PaaS Deployments (e.g. Next.js to Vercel, NestJS to Render).
+  * **Q3 (Database)**: MongoDB (NoSQL via Mongoose) vs. PostgreSQL/MySQL (SQL via Prisma ORM).
+  * **Q4 (Caching)**: Redis (Required if BullMQ, rate limiting, or distributed sessions are used) vs. Local In-Memory cache (CacheManager memory store).
+  * **Q5 (Multi-tenancy)**: SaaS Multi-Tenant / Multi-Client RBAC vs. Single-Client/Single-Organization setup.
+  * **Q6 (Mailing)**: SMTP, Resend, SendGrid, Amazon SES, or Mailgun (used for signup/forgot password links).
+  * **Q7 (File Storage)**: AWS S3, DigitalOcean Spaces, Cloudinary, or Local Filesystem.
+  * **Q8 (Conditional Logging)**: Ask for Datadog/ELK/CloudWatch *only* if logging infrastructure is mentioned in the PRD, and include a "Skip (Console logs only)" option.
+  * **Q9 (Conditional Payments)**: Ask for Stripe/PayPal/Razorpay *only* if payments are found in the PRD, and include a "Skip (No payment gateway)" option.
+  * **Q10 (Conditional Real-Time)**: Ask for WebSockets/SSE *only* if real-time requirements are mentioned in the PRD, and include a "Skip" option.
 
 ### 2. Phase Decomposition
 
-- Invoke the **Deep Planning Agent** to analyze the PRD and produce:
-  - Architecture design
-  - Database schema design
+- Invoke the **Deep Planning Agent** to analyze the PRD and the user Q&A answers, then produce:
+  - Architecture design (aligned with monorepo vs decoupled and database/cache decisions)
+  - Database schema design (Mongoose schemas or Prisma models)
   - API contract design
   - Task breakdown with dependencies
   - Phased roadmap
@@ -94,6 +105,9 @@ Update these files after every significant event:
 | `.ai/memory/blockers.md` | Blocker detected |
 | `.ai/memory/retry-log.md` | Retry attempted |
 
+> [!NOTE]
+> Tasks are updated using the `status-manager.js` script to automate log synchronization and reduce AI token overhead by 90%.
+
 ### 7. Validation & Phase Advancement
 
 Before advancing to the next phase:
@@ -109,7 +123,8 @@ Before advancing to the next phase:
 ```
 EXECUTION FLOW:
   PRD → [Super Agent reads PRD]
-      → [Deep Planning Agent creates plan]
+      → [Super Agent conducts Interactive Discovery Q&A with user]
+      → [Deep Planning Agent creates plan based on PRD & user responses]
       → [Super Agent validates plan]
       → FOR EACH phase IN roadmap:
           → [Backend Agent executes backend tasks]

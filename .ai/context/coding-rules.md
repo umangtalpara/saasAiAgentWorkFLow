@@ -59,10 +59,11 @@ import { join } from 'path';
 
 // 2. External libraries (npm packages)
 import { Injectable, HttpException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectModel } from '@nestjs/mongoose'; // If using MongoDB
+import { PrismaService } from '@/database/prisma.service'; // If using SQL
 
-// 3. Internal modules (absolute imports)
-import { User, UserDocument } from '@/modules/users/schemas/user.schema';
+// 3. Internal modules (absolute imports or local aliases)
+import { User } from '@/modules/users/entities/user.entity';
 import { AuthService } from '@/modules/auth/auth.service';
 
 // 4. Relative imports (same module)
@@ -78,11 +79,21 @@ throw new NotFoundException(`User with ID ${id} not found`);
 throw new ConflictException('Email already registered');
 throw new UnauthorizedException('Invalid credentials');
 
-// DO: Use try-catch with specific error handling
+// DO: Use try-catch with specific error handling for MongoDB
 try {
   await this.userModel.create(dto);
 } catch (error: any) {
   if (error.code === 11000) { // MongoDB duplicate key error
+    throw new ConflictException('Resource already exists');
+  }
+  throw new InternalServerErrorException('Failed to save resource');
+}
+
+// DO: Use try-catch with specific error handling for SQL (Prisma)
+try {
+  await this.prisma.user.create({ data: dto });
+} catch (error: any) {
+  if (error.code === 'P2002') { // Prisma unique constraint violation
     throw new ConflictException('Resource already exists');
   }
   throw new InternalServerErrorException('Failed to save resource');

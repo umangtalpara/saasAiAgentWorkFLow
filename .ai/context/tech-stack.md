@@ -1,5 +1,7 @@
 # Tech Stack
 
+The technologies utilized in this project are dynamically determined during the Discovery Q&A Phase. Below are the supported technologies and configurations.
+
 ## Backend
 
 | Technology | Version | Purpose |
@@ -7,7 +9,6 @@
 | **Node.js** | 24 LTS | JavaScript runtime |
 | **NestJS** | 11.x | Progressive Node.js framework |
 | **TypeScript** | 5.x | Type-safe JavaScript (strict mode) |
-| **Mongoose** | 8.x | MongoDB ODM (Primary Database ORM) |
 | **Passport** | 0.7.x | Authentication middleware |
 | **passport-jwt** | 4.x | JWT authentication strategy |
 | **bcrypt** | 5.x | Password hashing |
@@ -16,8 +17,7 @@
 | **@nestjs/swagger** | 7.x | OpenAPI documentation |
 | **@nestjs/config** | 3.x | Configuration management |
 | **@nestjs/throttler** | 5.x | Rate limiting |
-| **@nestjs/cache-manager** | 2.x | Caching abstraction |
-| **@nestjs/bullmq** | 11.x | BullMQ job queue (Redis-backed) |
+| **@nestjs/cache-manager** | 2.x | Caching abstraction (supports Redis or Local In-Memory) |
 | **Winston** | 3.x | Structured logging |
 | **helmet** | 7.x | HTTP security headers |
 | **cors** | 2.x | Cross-Origin Resource Sharing |
@@ -46,18 +46,30 @@
 | **next-themes** | Latest | Theme management (light/dark) |
 | **date-fns** | 3.x | Date utility library |
 
-## Databases
+## Databases (Choose One)
 
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| **MongoDB** | 7.x | Primary database (transactional and flexible document data) |
-| **Redis** | 7.x | In-memory cache, sessions, rate limiting |
+* **MongoDB** (Version 7.x) with **Mongoose** (8.x ODM) - Suitable for flexible document schemas and transaction support.
+* **PostgreSQL / MySQL** with **Prisma ORM** (5.x) or **TypeORM** (0.3.x) - Suitable for strict SQL relational schemas.
 
-## Background Jobs
+## Caching & Background Queues (Conditional)
 
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| **BullMQ** | 5.x | Redis-backed job queue for background tasks |
+* **Redis Engine** (7.x) + **BullMQ** (5.x): 
+  * Required if PRD specifies high-performance queues, rate limiting, or distributed sessions.
+* **Local In-Memory Cache**:
+  * Used if the user opts out of Redis setup to reduce infrastructure overhead. Background scheduling reverts to NestJS built-in `@nestjs/schedule` (cron and timeout jobs).
+
+## Storage, Logging & Integrations (Optional/Skippable)
+
+* **File Storage**:
+  * Cloud: AWS S3 or DigitalOcean Spaces.
+  * Local: Local server-side filesystem (hot-folder).
+* **Logging Managers**:
+  * Cloud: Datadog, ELK stack, or AWS CloudWatch.
+  * Local: Console-only logs using Winston formatted JSON outputs.
+* **Payment Gateways**:
+  * Optional: Stripe, PayPal, or Razorpay integrations (configured only if present in the PRD).
+* **Real-time Engine**:
+  * Optional: WebSockets (Socket.io) or Server-Sent Events (SSE).
 
 ## Testing
 
@@ -69,32 +81,14 @@
 | **@testing-library/react** | Latest | React component testing |
 | **ts-jest** | 29.x | TypeScript support for Jest |
 
-## DevOps
+## DevOps (Optional)
 
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| **Docker** | Latest | Application containerization |
-| **Docker Compose** | Latest | Multi-container orchestration |
-| **GitHub Actions** | N/A | CI/CD pipeline |
-| **Prometheus** | Latest | Metrics collection |
-| **Grafana** | Latest | Metrics visualization |
-| **ELK Stack** | Latest | Log aggregation and analysis |
-
-## Development Tools
-
-| Technology | Purpose |
-|-----------|---------|
-| **ESLint** | Code linting |
-| **Prettier** | Code formatting |
-| **Husky** | Git hooks |
-| **lint-staged** | Pre-commit linting |
-| **commitlint** | Commit message linting |
-| **ts-node** | TypeScript execution |
-| **nodemon** | Development auto-restart |
+* **Docker & Docker Compose**: Used to run databases, cache, and app services in containers for development and local staging. Skip if manual deployment is preferred.
+* **GitHub Actions**: Pipeline config for automatic build verification and test runner.
 
 ## Version Compatibility Notes
 
 - Node.js 24 LTS is required for native fetch and latest ESM support.
 - NestJS 11.x requires Node.js 18+ and TypeScript 5.0+.
 - Next.js 14.x requires React 18.x and Node.js 18+.
-- Mongoose 8.x requires Node.js 16+ and has improved TypeScript support.
+- Mongoose 8.x and Prisma 5.x require Node.js 16+ and have strict type checking.

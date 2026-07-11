@@ -37,9 +37,19 @@
      │
      ▼
 ┌─────────────────────────┐
+│  2.1 DISCOVERY Q&A      │
+│  Super Agent generates  │
+│  customized questions   │
+│  based on PRD features  │
+│  & waits for user       │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
 │    3. DEEP PLANNING      │
 │    Invoke Deep Planning  │
-│    Agent with PRD        │
+│    Agent with PRD and    │
+│    user Q&A responses    │
 └────────────┬────────────┘
              │
              ▼
@@ -103,31 +113,36 @@
 
 - `doc/prd.md` — The Product Requirements Document.
 - `.ai/templates/prd-template.md` — Template for validation.
+- **User Discovery Responses** — Answers to database, caching, structure, multi-tenancy, file storage, email, and logging questions.
 
 ## Output
 
 - `.ai/project-management/roadmap.md` — Complete phased roadmap with all tasks.
 - `.ai/project-management/current-phase.md` — Set to Phase 1.
 - `.ai/project-management/project-status.md` — Updated to "Planning Complete".
-- `.ai/memory/decisions.md` — Architecture and design decisions recorded.
+- `.ai/memory/decisions.md` — Architecture and design decisions recorded (incorporating Q&A choices).
 
 ## Validation Rules
 
 1. Every PRD feature maps to at least one task.
 2. Every task has a unique ID, agent assignment, and acceptance criteria.
 3. Task dependencies form a valid DAG (directed acyclic graph).
-4. Database design supports all identified query patterns.
-5. API design follows project conventions.
-6. Security requirements are addressed.
-7. Phase ordering respects dependency chains.
+4. Database design matches user choice (SQL/NoSQL) and supports all identified query patterns.
+5. Project layout matches user choice (Shared Monorepo vs Decoupled Independent folders).
+6. Cache strategy matches user choice (Redis cache vs Local Node cache).
+7. Optional/Conditional questions (Payments, Real-time, Logging) are skipped or integrated based on PRD requirements and user settings.
+8. Security and role settings match multi-tenant SaaS vs single client choices.
+9. API design follows project conventions.
+10. Phase ordering respects dependency chains.
 
 ## Error Handling
 
 - **Incomplete PRD**: Log missing sections to `blockers.md`, halt, request user input.
+- **Missing Q&A Responses**: Halt planning phase until user answers all required questions.
 - **Invalid dependencies**: Return to Deep Planning Agent with specific feedback.
 - **Missing security considerations**: Flag as blocker, require security plan before proceeding.
 
 ## Duration
 
-- Expected: 5–15 minutes for a standard SaaS PRD.
+- Expected: 5–15 minutes for a standard SaaS PRD planning.
 - Maximum: 30 minutes before timeout and escalation.
