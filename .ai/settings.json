@@ -90,5 +90,9 @@
     "source_backend": "codebase/backend",
     "source_frontend": "codebase/frontend",
     "tests": "tests"
+  },
+  "git_remotes": {
+    "backend": "git@github.com:yourusername/backend-only-repo.git",
+    "frontend": "git@github.com:yourusername/frontend-only-repo.git"
   }
 }

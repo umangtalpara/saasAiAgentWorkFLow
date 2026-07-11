@@ -24,14 +24,17 @@ The Super Agent is the central intelligence and master controller of the AI Fact
 - **Interactive Discovery Q&A Phase**: Formulate and present a customized questionnaire in the chat, blocking execution until the user provides responses.
   * **Q1 (Repo Structure)**: Shared Package Monorepo vs. Decoupled Standalone Projects (useful for separate frontend/backend server deployments).
   * **Q2 (Deploy Configs)**: Docker/K8s configs vs. Manual/PaaS Deployments (e.g. Next.js to Vercel, NestJS to Render).
-  * **Q3 (Database)**: MongoDB (NoSQL via Mongoose) vs. PostgreSQL/MySQL (SQL via Prisma ORM).
-  * **Q4 (Caching)**: Redis (Required if BullMQ, rate limiting, or distributed sessions are used) vs. Local In-Memory cache (CacheManager memory store).
-  * **Q5 (Multi-tenancy)**: SaaS Multi-Tenant / Multi-Client RBAC vs. Single-Client/Single-Organization setup.
-  * **Q6 (Mailing)**: SMTP, Resend, SendGrid, Amazon SES, or Mailgun (used for signup/forgot password links).
-  * **Q7 (File Storage)**: AWS S3, DigitalOcean Spaces, Cloudinary, or Local Filesystem.
-  * **Q8 (Conditional Logging)**: Ask for Datadog/ELK/CloudWatch *only* if logging infrastructure is mentioned in the PRD, and include a "Skip (Console logs only)" option.
-  * **Q9 (Conditional Payments)**: Ask for Stripe/PayPal/Razorpay *only* if payments are found in the PRD, and include a "Skip (No payment gateway)" option.
-  * **Q10 (Conditional Real-Time)**: Ask for WebSockets/SSE *only* if real-time requirements are mentioned in the PRD, and include a "Skip" option.
+  * **Q3 (Git Repository Strategy & SSH Verification)**: Single repository (stores agent settings and codebase together) OR 3-Repository Setup (stores all files in a Main repo, but pushes codebase/backend and codebase/frontend to separate independent Git repositories) OR **Skip (Manage locally first, configure repositories later)**.
+    * Ask the user to provide the SSH repository link(s) (e.g. `git@github.com:username/repo.git`) if they select Single or 3-Repo setup.
+    * **CRITICAL**: If they provide URLs, before proceeding to planning or scaffolding, the agent MUST run the verification command `node .ai/scripts/verify-ssh.js <ssh-url>` for the provided repository link(s). If verification fails, halt execution, display the error log, and prompt the user to check their SSH configuration or repository permissions. If they choose **Skip**, proceed directly with local scaffolding without Git repository checks.
+  * **Q4 (Database)**: MongoDB (NoSQL via Mongoose) vs. PostgreSQL/MySQL (SQL via Prisma ORM).
+  * **Q5 (Caching)**: Redis (Required if BullMQ, rate limiting, or distributed sessions are used) vs. Local In-Memory cache (CacheManager memory store).
+  * **Q6 (Multi-tenancy)**: SaaS Multi-Tenant / Multi-Client RBAC vs. Single-Client/Single-Organization setup.
+  * **Q7 (Mailing)**: SMTP, Resend, SendGrid, Amazon SES, or Mailgun (used for signup/forgot password links).
+  * **Q8 (File Storage)**: AWS S3, DigitalOcean Spaces, Cloudinary, or Local Filesystem.
+  * **Q9 (Conditional Logging)**: Ask for Datadog/ELK/CloudWatch *only* if logging infrastructure is mentioned in the PRD, and include a "Skip (Console logs only)" option.
+  * **Q10 (Conditional Payments)**: Ask for Stripe/PayPal/Razorpay *only* if payments are found in the PRD, and include a "Skip (No payment gateway)" option.
+  * **Q11 (Conditional Real-Time)**: Ask for WebSockets/SSE *only* if real-time requirements are mentioned in the PRD, and include a "Skip" option.
 
 ### 2. Phase Decomposition
 

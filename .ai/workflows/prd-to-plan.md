@@ -113,7 +113,7 @@
 
 - `doc/prd.md` — The Product Requirements Document.
 - `.ai/templates/prd-template.md` — Template for validation.
-- **User Discovery Responses** — Answers to database, caching, structure, multi-tenancy, file storage, email, and logging questions.
+- **User Discovery Responses** — Answers to database, caching, structure, git repository strategy, multi-tenancy, file storage, email, and logging questions.
 
 ## Output
 
@@ -128,17 +128,19 @@
 2. Every task has a unique ID, agent assignment, and acceptance criteria.
 3. Task dependencies form a valid DAG (directed acyclic graph).
 4. Database design matches user choice (SQL/NoSQL) and supports all identified query patterns.
-5. Project layout matches user choice (Shared Monorepo vs Decoupled Independent folders).
+5. Project layout matches user choice (Shared Monorepo vs Decoupled Independent folders) and Git repository configuration is mapped.
 6. Cache strategy matches user choice (Redis cache vs Local Node cache).
 7. Optional/Conditional questions (Payments, Real-time, Logging) are skipped or integrated based on PRD requirements and user settings.
 8. Security and role settings match multi-tenant SaaS vs single client choices.
 9. API design follows project conventions.
 10. Phase ordering respects dependency chains.
+11. Git repository SSH links are validated as active and authorized (or explicitly skipped for local-only setups).
 
 ## Error Handling
 
 - **Incomplete PRD**: Log missing sections to `blockers.md`, halt, request user input.
 - **Missing Q&A Responses**: Halt planning phase until user answers all required questions.
+- **SSH Connection Failure**: If testing repository links fails via `verify-ssh.js` (and Git setup was not skipped), log connection issue, halt planning, and request working SSH repository links.
 - **Invalid dependencies**: Return to Deep Planning Agent with specific feedback.
 - **Missing security considerations**: Flag as blocker, require security plan before proceeding.
 

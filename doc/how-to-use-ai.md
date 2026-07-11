@@ -117,6 +117,12 @@ If you ever need to inspect or run checks yourself, you can run these commands f
   ```
   *(Synchronizes the JSON database state to the markdown logs).*
 
+* **Sync Downstream Repositories (3-repo structure)**:
+  ```bash
+  node .ai/scripts/git-sync.js push-all
+  ```
+  *(Pushes backend and frontend directories to their respective standalone repositories).*
+
 ---
 
 ## 🔧 Post-Development Maintenance

@@ -87,6 +87,11 @@ Google Antigravity automatically detects conventions from `AGENTS.md` and uses t
   node .ai/scripts/status-manager.js sync
   ```
   *(Synchronizes JSON database state to markdown logs)*
+* **Downstream Repositories Synchronizer**:
+  ```bash
+  node .ai/scripts/git-sync.js push-all
+  ```
+  *(Automates pushing and pulling codebase subdirectories to separate frontend/backend Git repositories via subtrees)*
 
 ---
 
