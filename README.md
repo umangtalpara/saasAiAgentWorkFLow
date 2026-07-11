@@ -30,8 +30,8 @@ saasAiAgentWorkFLow/
 ├── doc/                 ← Product Requirements Documents (doc/prd.md)
 │
 └── codebase/            ← Generated applications
-    ├── backend/         ← NestJS 11 backend codebase (standardized on BullMQ + Redis)
-    └── frontend/        ← Next.js 14 frontend codebase
+    ├── backend/         ← NestJS 11 backend codebase (flexible database, caching, and scheduling setup)
+    └── frontend/        ← Next.js 14 frontend codebase (Tailwind & Shadcn UI)
 ```
 
 ## How to Get Started

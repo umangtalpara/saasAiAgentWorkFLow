@@ -20,10 +20,10 @@ The Backend Agent builds the server-side application. It implements API endpoint
 | Node.js | 24 LTS | Runtime |
 | NestJS | 11.x | Application framework |
 | TypeScript | 5.x | Language (strict mode) |
-| MongoDB | 7.x | Primary database (transactional & flexible document data) |
-| Redis | 7.x | Caching, sessions, rate limiting |
-| BullMQ | 5.x | Redis-backed job queue |
-| Docker | Latest | Containerization |
+| Databases | MongoDB (7.x) OR PostgreSQL/MySQL | Transactional and document/relational data storage |
+| Caching | Redis (7.x) OR Local Memory Cache | Session storage, rate limiting, and caching |
+| Queues | BullMQ (Redis) OR Local Cron Scheduler | Background job queue or scheduler configuration |
+| Docker | Latest (Optional) | Containerization configuration |
 | Swagger | OpenAPI 3.0 | API documentation |
 | Jest | 29.x | Unit & integration testing |
 | Supertest | Latest | HTTP assertion testing |
@@ -149,7 +149,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 }
 ```
 
-### Database Patterns
+### Database & Caching Patterns
 
 #### MongoDB (Mongoose)
 - Define schemas with strict validation.
@@ -159,12 +159,24 @@ export class AllExceptionsFilter implements ExceptionFilter {
 - Use sessions and transactions (`withTransaction`) for multi-document operations.
 - Avoid enabling auto-indexing in production configurations.
 
-#### Redis
+#### SQL Databases (Prisma ORM)
+- Define relations using explicit referential actions (e.g. `onDelete: Cascade`) in `schema.prisma`.
+- Always generate the Prisma Client using `prisma generate` after schema edits.
+- Use `$transaction` API for operations requiring multi-row data integrity.
+- Index fields utilized in sorting, matching, or filtering.
+- Use raw SQL queries (`$queryRaw`) only if Prisma's query builder is insufficient for optimization.
+
+#### Redis (For Queues & Caching)
 - Use namespaced keys: `app:module:entity:id`.
 - Set TTL on all cached values.
 - Implement cache invalidation on write operations.
 - Use Redis Streams for real-time features.
 - **Connection Rule**: Connect using the single `REDIS_URL` environment variable. Do NOT use separate `REDIS_HOST`, `REDIS_PORT`, or `REDIS_PASSWORD` variables.
+
+#### Local In-Memory Cache (If Redis is skipped)
+- Wrap NestJS `Cache` module or `cache-manager` in an injectable wrapper service.
+- Maintain consistency by manually clearing cache keys upon mutation operations.
+- Set reasonable memory TTLs to prevent memory leaks in single-instance deployments.
 
 ### Logging & Monitoring Standards
 

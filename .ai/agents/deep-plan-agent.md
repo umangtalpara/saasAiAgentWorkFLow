@@ -104,9 +104,12 @@ For each data entity, specify:
 
 #### Database Selection Rules
 
-| Persistent data (transactional, billing, logs, documents) | MongoDB | Flexible schema, nested documents, transactions support |
-| Session management, rate limiting, caching | Redis | In-memory speed, TTL support |
-| Background job queues | BullMQ (Redis) | Reliable message delivery, retries, and failed job queueing |
+| Data Category | Engine Option | Purpose / Benefit |
+|---------------|---------------|-------------------|
+| **NoSQL Storage** | MongoDB (Mongoose) | Flexible JSON document storage, high read-write, native transactions |
+| **SQL Relational** | PostgreSQL / MySQL (Prisma) | Type-safe queries, strong relational keys, migrations management |
+| **High Scale Caching & Queues** | Redis (BullMQ) | Redis streams, job retries, shared sessions, rate limiting |
+| **Low Footprint Caching & Cron** | Local Cache & Schedule | Basic in-memory caching and `@nestjs/schedule` cron tasks |
 
 ### 4. API Design
 
