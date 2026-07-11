@@ -116,3 +116,28 @@ If you ever need to inspect or run checks yourself, you can run these commands f
   node .ai/scripts/status-manager.js sync
   ```
   *(Synchronizes the JSON database state to the markdown logs).*
+
+---
+
+## 🔧 Post-Development Maintenance
+
+After your initial SaaS application is complete, you can continue to use the AI Factory to fix bugs and add new features.
+
+### 🐛 Fixing a Bug (Hotfix Loop)
+If a bug is discovered in production or testing, organize the report in the `doc/bugs/` directory:
+
+1. Create a new bug file: **`doc/bugs/[bug-name-or-id].md`** (e.g. `doc/bugs/bug-101-auth-failure.md`).
+2. Describe the bug, list steps to reproduce, and paste error logs.
+3. Message the AI agent:
+   > *"I have created a bug report at doc/bugs/[bug-name-or-id].md. Please investigate, write a reproducing test, and patch the codebase."*
+4. The AI will automatically isolate the issue, write a reproducing test case, fix the bug, confirm all tests pass, run project linter audits, and record the fix.
+
+### 🚀 Adding a New Feature (Feature Loop)
+To expand your product with new functionalities:
+
+1. Create a new feature specification file: **`doc/features/[feature-name].md`** (e.g. `doc/features/analytics-dashboard.md`).
+2. Describe the feature requirements, acceptance criteria, and API/schema expectations.
+3. Message the AI agent:
+   > *"I have added a new feature request at doc/features/[feature-name].md. Please analyze the impact on our current architecture, add it as a new phase, and implement it."*
+4. The AI will run an impact analysis, set up database migrations, add a new phase to the task database, generate the tasks, execute the code, and write tests to verify it works.
+
