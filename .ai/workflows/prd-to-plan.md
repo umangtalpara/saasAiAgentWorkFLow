@@ -130,11 +130,11 @@
 4. Database design matches user choice (SQL/NoSQL) and supports all identified query patterns.
 5. Project layout matches user choice (Shared Monorepo vs Decoupled Independent folders) and Git repository configuration is mapped.
 6. Cache strategy matches user choice (Redis cache vs Local Node cache).
-7. Optional/Conditional questions (Payments, Real-time, Logging) are skipped or integrated based on PRD requirements and user settings.
+7. All 11 Discovery Q&A questions (Repo Structure, Deploy Configs, Git Strategy, Database, Caching, Multi-Tenancy, Mailing, File Storage, Logging, Payments, and Real-Time) are compulsory and must be asked and answered by the user under all circumstances (with "Skip" options chosen explicitly by the user rather than auto-skipped).
 8. Security and role settings match multi-tenant SaaS vs single client choices.
 9. API design follows project conventions.
 10. Phase ordering respects dependency chains.
-11. Git repository SSH links are validated as active and authorized (or explicitly skipped for local-only setups).
+11. Git repository SSH links are validated as active and authorized if Single/3-Repo strategy is selected.
 
 ## Error Handling
 
