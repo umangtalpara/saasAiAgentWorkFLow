@@ -134,7 +134,7 @@
 8. Security and role settings match multi-tenant SaaS vs single client choices.
 9. API design follows project conventions.
 10. Phase ordering respects dependency chains.
-11. Git repository SSH links are validated as active and authorized if Single/3-Repo strategy is selected.
+11. Git repository SSH links are validated as active and authorized if Single/3-Repo strategy is selected, and root remote origin is correctly configured in the project.
 
 ## Error Handling
 

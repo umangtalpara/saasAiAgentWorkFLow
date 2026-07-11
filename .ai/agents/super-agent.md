@@ -26,8 +26,18 @@ The Super Agent is the central intelligence and master controller of the AI Fact
   * **Q1 (Repo Structure)**: Shared Package Monorepo vs. Decoupled Standalone Projects (useful for separate frontend/backend server deployments). [COMPULSORY]
   * **Q2 (Deploy Configs)**: Docker/K8s configs vs. Manual/PaaS Deployments (e.g. Next.js to Vercel, NestJS to Render). [COMPULSORY]
   * **Q3 (Git Repository Strategy & SSH Verification)**: Single repository (stores agent settings and codebase together) OR 3-Repository Setup (stores all files in a Main repo, but pushes codebase/backend and codebase/frontend to separate independent Git repositories) OR **Skip (Manage locally first, configure repositories later)**. [COMPULSORY]
-    * Ask the user to select one of these and provide the SSH repository link(s) (e.g. `git@github.com:username/repo.git`) if they select Single or 3-Repo setup.
-    * **CRITICAL**: If they provide URLs, before proceeding to planning or scaffolding, the agent MUST write the URLs to the `git_remotes` key in `.ai/settings.json` and run the verification command `node .ai/scripts/verify-ssh.js <ssh-url>` for the provided repository link(s). If verification fails, halt execution, display the error log, and prompt the user to check their SSH configuration or repository permissions. If they choose **Skip**, proceed directly with local scaffolding without Git repository checks.
+    * **Interactive Flow Rules for Q3**:
+      * If the user selects **Single repository**:
+        * Ask in the chat for the **Main repository SSH link** (e.g. `git@github.com:username/repo.git`).
+        * The agent must directly update `.ai/settings.json` under `git_remotes` by setting `"main": "<main-ssh-url>"` (removing any unused remotes).
+        * The agent must configure the root Git remote by running `git remote add origin <main-ssh-url>` (or if `origin` already exists, run `git remote set-url origin <main-ssh-url>`).
+      * If the user selects **3-Repository Setup**:
+        * Ask in the chat one-by-one for all 3 links: **Main repository SSH link**, **Backend repository SSH link**, and **Frontend repository SSH link**.
+        * The agent must directly update `.ai/settings.json` under `git_remotes` by setting `"main": "<main-ssh-url>"`, `"backend": "<backend-ssh-url>"`, and `"frontend": "<frontend-ssh-url>"`.
+        * The agent must configure the root Git remote by running `git remote add origin <main-ssh-url>` (or if `origin` already exists, run `git remote set-url origin <main-ssh-url>`).
+      * If the user selects **Skip**:
+        * Proceed directly with local scaffolding without configuring Git remote checks.
+    * **CRITICAL**: If any repository URLs are provided, before proceeding to planning or scaffolding, the agent MUST run the verification command `node .ai/scripts/verify-ssh.js <ssh-url>` for the provided repository link(s). If verification fails, halt execution, display the error log, and prompt the user to check their SSH configuration or repository permissions.
   * **Q4 (Database)**: MongoDB (NoSQL via Mongoose) vs. PostgreSQL/MySQL (SQL via Prisma ORM). [COMPULSORY]
   * **Q5 (Caching)**: Redis (Required if BullMQ, rate limiting, or distributed sessions are used) vs. Local In-Memory cache (CacheManager memory store). [COMPULSORY]
   * **Q6 (Multi-tenancy)**: SaaS Multi-Tenant / Multi-Client RBAC vs. Single-Client/Single-Organization setup. [COMPULSORY]
