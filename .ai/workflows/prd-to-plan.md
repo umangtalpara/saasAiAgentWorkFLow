@@ -130,7 +130,7 @@
 4. Database design matches user choice (SQL/NoSQL) and supports all identified query patterns.
 5. Project layout matches user choice (Shared Monorepo vs Decoupled Independent folders) and Git repository configuration is mapped.
 6. Cache strategy matches user choice (Redis cache vs Local Node cache).
-7. All 11 Discovery Q&A questions (Repo Structure, Deploy Configs, Git Strategy, Database, Caching, Multi-Tenancy, Mailing, File Storage, Logging, Payments, and Real-Time) are compulsory and must be asked and answered by the user under all circumstances (with "Skip" options chosen explicitly by the user rather than auto-skipped).
+7. All 11 Discovery Q&A questions (Repo Structure, Deploy Configs, Git Strategy, Database, Caching, Multi-Tenancy, Mailing, File Storage, Logging, Payments, and Real-Time) are compulsory and must be asked and answered by the user under all circumstances (with "Skip" options chosen explicitly by the user rather than auto-skipped). The agent MUST directly update the configurations in `.ai/settings.json` and `.ai/memory/state.json` based on the user's responses, rather than requesting manual file edits from the user.
 8. Security and role settings match multi-tenant SaaS vs single client choices.
 9. API design follows project conventions.
 10. Phase ordering respects dependency chains.
